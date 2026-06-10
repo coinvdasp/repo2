@@ -300,47 +300,58 @@ normal 和 global 命令提供强大的批量行操作
 `%` ： 特殊的 range ，代表当前文件的所有行
 `'<`/`'>` : 可视模式中选中范围的开头和结尾（可视模式下直接按 `:` 可以直接设置）
 
+
 ### 行的复制、移动、粘贴
 - `:[range] copy {address}` : 把 `range` 中的行复制到 `address` 后面
 - `:[range] move {address}` : 把 `range` 中的行移动到 `address` 后面
 - `:[address] put [x]` : 把寄存器 `x` 的内容粘贴到 `address` 后面
 0 作为虚拟行的 address， 可以用来将内容 插入第一行
 
-批量操作：normal 命令
-格式 :[range] normal {commands}
-含义：对 range 中的所有行执行 Normal 模式下的命令 commands
-· 将 range 设置为 %，可以对整个文件的所有行执行
-· :[range] normal . : 配合 . 命令，效果拨群
-常用做法：先做一次修改操作，再用 normal 命令在指定的行上完成操作
-· . 命令只能记录一次修改，用宏可以实现记录多个操作
-: [range] normal @{register}
-常用做法：先把想要的操作录制成宏，再用normal 命令在指定的行上重放宏
+### Ex命令
+| 删除、拷贝、打印              | 复制、移动、粘贴                  |
+| --------------------- | ------------------------- |
+| `:[range] delete [x]` | `:[range] copy {address}` |
+| `:[range] yank [x]`   | `:[range] move {address}` |
+| `:[range] print`      | `:[address] put [x]`      |
+Ex命令和 Normal 模式下的编辑操作的区别：
+- 命令模式处的编辑操作以“行”为单位
+- 命令模式下的编辑操作无需移动光标
 
-批量操作： global 命令
-格式 : [range] global/{pattern}/[cmd]
-含义：对 range 中包含 pattern 的所有行执行 Command 模式下的 Ex 命令
-[cmd] : Ex 命令，不给的话默认是打印（print）
-注意， normal 命令也是 Ex 命令！
-:[range] global/{pattern}/normal {commands} : 对 range 中所有带 pattern 的行，
-执行 Normal 模式下的命令 commands
+### 批量操作：normal 命令
+格式 ：`:[range] normal {commands}`
+含义：**对 `range` 中的所有行执行 Normal 模式下的命令 `commands`**
+- 将 `range` 设置为 `%`，可以对整个文件的所有行执行
+- `:[range] normal .` : 配合 `.` 命令，效果拨群
+  常用做法：先做一次修改操作，再用 normal 命令在指定的行上完成操作
+- `.` 命令只能记录一次修改，用宏可以实现记录多个操作
+  `: [range] normal @{register}`
+  常用做法：先把想要的操作录制成宏，再用 normal 命令在指定的行上重放宏
+
+### 批量操作： global 命令
+格式 : `:[range] global/{pattern}/[cmd]`
+含义：**对 `range` 中包含 `pattern` 的所有行执行 Command 模式下的 Ex 命令**
+`[cmd]` : Ex 命令，不给的话默认是打印（`print`）
+注意， `normal` 命令也是 Ex 命令！
+`:[range] global/{pattern}/normal {commands}` : 对 `range` 中所有带 `pattern` 的行，
+执行 Normal 模式下的命令 `commands`
 例子：
-· :% global /TODO/delete : 删除所有带 RODO 的行
+- `:% global /TODO/delete` : 删除所有带 RODO 的行
 
-替换命令
-:[range]s/{pattern}/{string}/[flags]
-将 pattern 替换为 string
-flags :
-· g：替换每一行的所有匹配
-· i：忽视大小写
-· c：替换前进行确认
-· n：计数而不是替换
-:%s/Vim/gn : 统计文件中所有 Vim 出现的次数（此时替换为什么无所谓，加了 n 就不会
+### 替换命令
+`:[range]s/{pattern}/{string}/[flags]`
+将 `pattern` 替换为 `string`
+`flags` :
+- `g`：替换每一行的所有匹配
+- `i`：忽视大小写
+- `c`：替换前进行确认
+- `n`：计数而不是替换
+`:%s/Vim/gn` : 统计文件中所有 `Vim` 出现的次数（此时替换为什么无所谓，加了 n 就不会
 执行替换操作
 
-分屏
-split [filename] : split命令可以上下分屏，也可以指定文件名。
-使用 Ctrl+w 键进行切换 split 命令也可以简化为sp
-vsplit [filename] : vsplit 命令可以左右分屏。
+### 分屏
+`split [filename]` : split命令可以上下分屏，也可以指定文件名。
+使用 `Ctrl+w` 键进行切换 `split` 命令也可以简化为 `sp`
+`vsplit [filename]` : `vsplit` 命令可以左右分屏。
 
 #### Vim 中常见的补全
 
@@ -355,9 +366,9 @@ vsplit [filename] : vsplit 命令可以左右分屏。
   - `<C-x><C-o>` 全能（Omni）补全
 
 Vim 更换配色
-使用 :colorscheme 显示当前的主题配色，默认是 default
-用 :colorscheme <Ctrl+d> 可以显示所有的配色
-用 :colorscheme 配色名 就可以修改配色
+使用 `:colorscheme` 显示当前的主题配色，默认是 default
+用 `:colorscheme <Ctrl+d>` 可以显示所有的配色
+用 `:colorscheme 配色名` 就可以修改配色
 从网络上寻找更好看的配色
-搜索vim colorscheme 可以找到很多 vim 配色网站 例如
+搜索 `vim colorscheme` 可以找到很多 vim 配色网站 例如
 <https://github.com/flazz/vim-colorschemes>
